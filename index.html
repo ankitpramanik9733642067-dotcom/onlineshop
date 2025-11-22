@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> GROWSHOP STORE</title>
+
+<style>
+/* RESET */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+/* BODY */
+body{
+    background: #f2f3f7;
+}
+
+/* ================= SIGNUP PAGE ================= */
+#signupPage{
+    height: 100vh;
+    background: url("https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1400&q=80") no-repeat center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-box{
+    width: 360px;
+    padding: 25px;
+    background: rgba(100,100,100,0.10);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
+
+.signup-box h2{
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.signup-box label{
+    color: #fff;
+    font-weight: 600;
+}
+
+.signup-box input{
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 15px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.8);
+}
+
+.password-box{
+    display: flex;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.password-box input{
+    flex: 1;
+    border: none;
+    background: transparent;
+}
+
+.password-box span{
+    padding: 8px;
+    cursor: pointer;
+}
+
+.signup-box button{
+    width: 100%;
+    padding: 12px;
+    background: #ff6f00;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+}
+
+#successMsg{
+    color: #fff;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+}
+
+/* ================= HOME PAGE ================= */
+#homePage{
+    display: none;
+}
+
+header{
+    background: #232f3e;
+    color: #fff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-bar input{
+    padding: 10px;
+    width: 250px;
+    border-radius: 6px;
+    border: none;
+}
+
+.cart{
+    position: relative;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cart-count{
+    background: red;
+    color: #fff;
+    padding: 3px 7px;
+    border-radius: 50%;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 12px;
+}
+
+.container{
+    padding: 20px 40px;
+}
+
+.categories button{
+    padding: 8px 16px;
+    border: none;
+    background: #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.products{
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.product{
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.product img{
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+}
+
+.product button{
+    width: 100%;
+    background: #ff9900;
+    padding: 10px;
+    color: #fff;
+    border: none;
+    margin-top: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ====================================================== -->
+<!--                    SIGNUP PAGE                         -->
+<!-- ====================================================== -->
+<div id="signupPage">
+    <div class="signup-box">
+        <h2>Create Account</h2>
+
+        <label>Full Name</label>
+        <input type="text" id="name">
+
+        <label>Email</label>
+        <input type="email" id="email">
+
+        <label>Phone Number</label>
+        <input type="text" id="phone">
+
+        <label>Password</label>
+        <div class="password-box">
+            <input type="password" id="pass">
+            <span onclick="togglePass('pass')">👁️</span>
+        </div>
+
+        <label>Confirm Password</label>
+        <div class="password-box">
+            <input type="password" id="cpass">
+            <span onclick="togglePass('cpass')">👁️</span>
+        </div>
+
+        <button onclick="signup()">Signup</button>
+
+        <p id="successMsg">Signup Successful ✔️</p>
+    </div>
+</div>
+
+<!-- ====================================================== -->
+<!--                    HOME PAGE                           -->
+<!-- ====================================================== -->
+<div id="homePage">
+
+<header>
+    <h2>GROWSHOP STORE</h2>
+
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Search products..." onkeyup="searchProduct()">
+    </div>
+
+    <div class="cart">🛒 Cart <span id="cartCount" class="cart-count">0</span></div>
+</header>
+
+<div class="container">
+    <div class="categories">
+        <button onclick="filterCategory('all')">All</button>
+        <button onclick="filterCategory('electronics')">Electronics</button>
+        <button onclick="filterCategory('fashion')">Fashion</button>
+        <button onclick="filterCategory('grocery')">Grocery</button>
+    </div>
+
+    <div id="productContainer" class="products"></div>
+</div>
+
+</div>
+
+<!-- ====================================================== -->
+<!--                         JAVASCRIPT                     -->
+<!-- ====================================================== -->
+
+<script>
+
+function togglePass(id){
+    let input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+}
+
+function signup(){
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let phone = document.getElementById("phone").value;
+    let pass = document.getElementById("pass").value;
+    let cpass = document.getElementById("cpass").value;
+
+    if(name=="" || email=="" || phone=="" || pass=="" || cpass==""){
+        alert("⚠ Fill all fields!");
+        return;
+    }
+    if(pass !== cpass){
+        alert("❌ Passwords do not match!");
+        return;
+    }
+
+    document.getElementById("successMsg").style.display = "block";
+
+    setTimeout(()=>{
+        document.getElementById("signupPage").style.display = "none";
+        document.getElementById("homePage").style.display = "block";
+    },1200);
+}
+
+
+/* HOME PAGE JS */
+
+let cartCount = 0;
+
+const products = [
+    { name: "iPhone 14", price: 69999, category: "electronics", img: "https://www.apple.com/in/iphone-17-pro/images/overview/highlights/highlights_design_endframe__flnga0hibmeu_large.jpg" },
+    { name: "Samsung Galaxy S23", price: 64999, category: "electronics", img: "https://firsthub.in/public/uploads/all/ARsh56yKdR3mHrMHMCVv8bVLAa6sXRE2ATdkPtL1.webp" },
+    { name: "Laptop Bag", price: 999, category: "fashion", img: "https://images-cdn.ubuy.co.in/633accdf9379676a802d7a5b-laptop-backpack-15-6-inch-business-slim.jpg" },
+    { name: "Men's Jacket", price: 1599, category: "fashion", img: "https://rukminim3.flixcart.com/image/388/494/xif0q/shopsy-jacket/i/n/p/l-shopsymen-farqad-men-original-imah83seuh25u4gg.jpeg?q=60&crop=false" },
+    { name: "T-shirt", price: 399, category: "fashion", img: "https://nobero.com/cdn/shop/files/aloe-green_bdad13de-3ca6-4379-bd6b-cd12316b1253.jpg?v=1712206110" },
+    { name: "Milk", price: 60, category: "grocery", img: "https://cdassets.countrydelight.in/headerFooter/header/image/A2-COW-MILK-1.jpg" },
+    { name: "Bread", price: 40, category: "grocery", img: "https://assets.bonappetit.com/photos/64ac604a047251c7e5ee272e/1:1/w_3625,h_3625,c_limit/20230509-0823-APPLIANCES-30922.jpg" },
+    { name: "Cold Drink", price: 35, category: "grocery", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCsPlS50_3RVKUMN7mNEsyYbKKrrQE84mKzA&s" },
+    { name: "Headphones", price: 899, category: "electronics", img: "https://images-cdn.ubuy.co.in/6624868973647a707e5b8399-2024-new-gaming-headset-for-pc-ps4.jpg" },
+    { name: "Smart Watch", price: 1299, category: "electronics", img: "https://www.aviationkart.com/cdn/shop/products/Sc0f9d788987f4bc69b44c1f9e5582ce22_2048x.jpg?v=1691223409" }
+];
+
+function loadProducts(list){
+    let container = document.getElementById("productContainer");
+    container.innerHTML = "";
+
+    list.forEach(p=>{
+        container.innerHTML += `
+        <div class="product">
+            <img src="${p.img}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>₹${p.price}</p>
+            <button onclick="addToCart()">Add to Cart</button>
+        </div>`;
+    });
+}
+loadProducts(products);
+
+function addToCart(){
+    cartCount++;
+    document.getElementById("cartCount").innerText = cartCount;
+}
+
+function filterCategory(cat){
+    if(cat==="all") return loadProducts(products);
+    let filtered = products.filter(p=>p.category===cat);
+    loadProducts(filtered);
+}
+
+function searchProduct(){
+    let text = document.getElementById("search").value.toLowerCase();
+    let filtered = products.filter(p=>p.name.toLowerCase().includes(text));
+    loadProducts(filtered);
+}
+</script>
+
+</body>
+</html>
